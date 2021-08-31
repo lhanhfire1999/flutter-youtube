@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:miniplayer/miniplayer.dart';
 import 'package:youtube_app/screens/nav_screen.dart';
+import 'package:youtube_app/widgets/video_info.dart';
 
 class VideoScreen extends StatelessWidget {
   const VideoScreen({Key? key}) : super(key: key);
@@ -40,8 +41,11 @@ class VideoScreen extends StatelessWidget {
                         ),
                         const LinearProgressIndicator(
                           value: 0.4,
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.red),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.red,
+                          ),
                         ),
+                        VideoInfo(video: selectedVideo),
                       ],
                     ),
                   );
