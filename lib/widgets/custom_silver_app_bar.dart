@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:youtube_app/screens/data.dart';
 
 class CustomSliverAppBar extends StatelessWidget {
   const CustomSliverAppBar({Key? key}) : super(key: key);
@@ -24,13 +23,6 @@ class CustomSliverAppBar extends StatelessWidget {
         IconButton(
           onPressed: () {},
           icon: const Icon(Icons.search),
-        ),
-        IconButton(
-          iconSize: 40.0,
-          icon: CircleAvatar(
-            foregroundImage: NetworkImage(currentUser.profileImageUrl),
-          ),
-          onPressed: () {},
         ),
       ],
     );

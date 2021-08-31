@@ -1,31 +1,177 @@
+// import 'package:flutter/material.dart';
+// import 'package:youtube_app/screens/data.dart';
+// import 'package:youtube_app/widgets/custom_silver_app_bar.dart';
+// import 'package:youtube_app/widgets/video_card.dart';
+
+// class HomeScreen extends StatelessWidget {
+//   const HomeScreen({Key? key}) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: CustomScrollView(
+//         slivers: [
+//           CustomSliverAppBar(),
+//           SliverPadding(
+//             padding: const EdgeInsets.only(bottom: 60.0),
+//             sliver: SliverList(
+//               delegate: SliverChildBuilderDelegate(
+//                 (context, index) {
+//                   final video = videos[index];
+//                   return VideoCard(video: video);
+//                 },
+//                 childCount: videos.length,
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+import 'package:youtube_app/models/Model.dart';
+import 'package:youtube_app/services/youtube_service.dart';
 import 'package:flutter/material.dart';
-import 'package:youtube_app/screens/data.dart';
 import 'package:youtube_app/widgets/custom_silver_app_bar.dart';
 import 'package:youtube_app/widgets/video_card.dart';
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
+class HomeScreen extends StatefulWidget {
   @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  static const double endReachedThreshold = 200;
+  bool loading = true;
+  final ScrollController scrollController = ScrollController();
+  String categorySelected = '';
+  String nextPageToken = '';
+  List<Category> categories = [];
+  late ListResultVideo videos;
+  @override
+  void initState() {
+    super.initState();
+    _initVideo();
+    scrollController.addListener(onScroll);
+  }
+
+  _initVideo() async {
+    ListResultVideo videosRes = (await APIService.instance
+        .getPopularVideoByRegion(
+            regionCode: 'US', categoryId: '', max: 10, nextPageToken: ''));
+    List<Category> categoriesRes =
+        await APIService.instance.getCatagories(regionCode: 'US');
+    setState(() {
+      videos = videosRes;
+      categories = categoriesRes;
+      nextPageToken = videosRes.nextPageToken;
+      loading = false;
+    });
+  }
+
+  handleGetVideoFromCategory(String categoryId) async {
+    setState(() {
+      loading = true;
+    });
+    ListResultVideo videosRes = (await APIService.instance
+        .getPopularVideoByRegion(
+            regionCode: 'US',
+            categoryId: categoryId,
+            max: 10,
+            nextPageToken: ''));
+    setState(() {
+      categorySelected = categoryId;
+      videos = videosRes;
+      nextPageToken = videosRes.nextPageToken;
+      loading = false;
+    });
+  }
+
+  handleLoadMore() async {
+    if (nextPageToken != '') {
+      ListResultVideo videosRes = (await APIService.instance
+          .getPopularVideoByRegion(
+              regionCode: 'US',
+              categoryId: categorySelected,
+              max: 10,
+              nextPageToken: nextPageToken));
+      List<Video> newList = videos.list;
+      if (videosRes.nextPageToken != nextPageToken) {
+        videosRes.list.forEach((video) {
+          newList.add(video);
+        });
+        setState(() {
+          nextPageToken = videosRes.nextPageToken;
+          videos.list = newList;
+          loading = false;
+        });
+      }
+    }
+  }
+
+  void onScroll() {
+    if (!scrollController.hasClients) return;
+
+    final thresholdReached =
+        scrollController.position.extentAfter < endReachedThreshold;
+    if (thresholdReached) {
+      setState(() {
+        loading = true;
+      });
+      handleLoadMore();
+    }
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          CustomSliverAppBar(),
-          SliverPadding(
-            padding: const EdgeInsets.only(bottom: 60.0),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final video = videos[index];
-                  return VideoCard(video: video);
-                },
-                childCount: videos.length,
+      body: Column(mainAxisSize: MainAxisSize.min, children: [
+        Expanded(
+          child: CustomScrollView(
+            controller: scrollController,
+            slivers: [
+              CustomSliverAppBar(),
+              SliverToBoxAdapter(
+                child: Container(
+                  height: 50,
+                  child: ListView.builder(
+                      physics: ClampingScrollPhysics(),
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: categories.length,
+                      itemBuilder: (BuildContext context, int index) =>
+                          GestureDetector(
+                              onTap: () => handleGetVideoFromCategory(
+                                  categories[index].id),
+                              child: (categorySelected == categories[index].id)
+                                  ? chipForRow(categories[index].title, true)
+                                  : chipForRow(
+                                      categories[index].title, false))),
+                ),
               ),
-            ),
+              SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  if (loading == false) {
+                    return VideoCard(video: videos.list[index]);
+                  }
+                }, childCount: (loading == false) ? videos.list.length : 0),
+              ),
+            ],
           ),
-        ],
-      ),
+        ),
+      ]),
     );
+  }
+
+  Widget chipForRow(String label, bool isSelected) {
+    return Chip(
+        labelPadding: EdgeInsets.all(5.0),
+        label: Text(
+          label,
+          style: TextStyle(color: isSelected ? Colors.black : Colors.white),
+        ),
+        backgroundColor: isSelected ? Colors.white : Colors.grey[60],
+        elevation: 4.0,
+        padding: EdgeInsets.symmetric(vertical: 6.0, horizontal: 8.0));
   }
 }

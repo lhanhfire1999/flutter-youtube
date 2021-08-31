@@ -8,7 +8,7 @@ class APIService {
 
   static final APIService instance = APIService._instantiate();
 
-  final String baseUrl = 'localhost:7070';
+  final String baseUrl = '10.0.2.2:7070';
   Future<ListResultVideo> getPopularVideoByRegion(
       {required String regionCode,
       required int max,

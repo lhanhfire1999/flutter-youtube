@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:miniplayer/miniplayer.dart';
-import 'package:youtube_app/screens/data.dart';
+import 'package:youtube_app/models/Model.dart';
 import 'package:youtube_app/screens/home_screen.dart';
 import 'package:youtube_app/screens/video_screen.dart';
 
@@ -70,7 +70,7 @@ class _NavScreenState extends State<NavScreen> {
                                   Row(
                                     children: [
                                       Image.network(
-                                        selectedVideo.thumbnailUrl,
+                                        selectedVideo.mediumThumbnail,
                                         height: _playerMinHeight - 4.0,
                                         width: 120.0,
                                         fit: BoxFit.cover,
@@ -100,7 +100,7 @@ class _NavScreenState extends State<NavScreen> {
                                               ),
                                               Flexible(
                                                 child: Text(
-                                                  selectedVideo.author.username,
+                                                  selectedVideo.channelTitle,
                                                   overflow:
                                                       TextOverflow.ellipsis,
                                                   style: Theme.of(context)
@@ -138,7 +138,9 @@ class _NavScreenState extends State<NavScreen> {
                                 ],
                               ),
                             );
-                          return VideoScreen();
+                          return VideoScreen(
+                            video: selectedVideo,
+                          );
                         },
                       ),
                     ),

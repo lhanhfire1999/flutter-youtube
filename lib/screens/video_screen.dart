@@ -1,30 +1,77 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:miniplayer/miniplayer.dart';
-import 'package:youtube_app/screens/data.dart';
+import 'package:youtube_app/models/Model.dart';
 import 'package:youtube_app/screens/nav_screen.dart';
+import 'package:youtube_app/services/youtube_service.dart';
 import 'package:youtube_app/widgets/video_card.dart';
 import 'package:youtube_app/widgets/video_info.dart';
 
 class VideoScreen extends StatefulWidget {
-  const VideoScreen({Key? key}) : super(key: key);
+  const VideoScreen({Key? key, required this.video}) : super(key: key);
+  final Video video;
 
   @override
   _VideoScreenState createState() => _VideoScreenState();
 }
 
 class _VideoScreenState extends State<VideoScreen> {
-  ScrollController? _scrollController;
-
-  @override
+  late ListResultVideo videosRelated;
+  static const double endReachedThreshold = 50;
+  bool loading = true;
+  final ScrollController scrollController = ScrollController();
+  String nextPageToken = '';
+  // late YoutubePlayerController youtubeController;
   void initState() {
     super.initState();
-    _scrollController = ScrollController();
+    scrollController.addListener(onScroll);
+    _initVideo();
+  }
+
+  _initVideo() async {
+    ListResultVideo videoRes = await APIService.instance
+        .getRelatedVideos(videoId: widget.video.id, max: 8, nextPageToken: '');
+    setState(() {
+      videosRelated = videoRes;
+      nextPageToken = videoRes.nextPageToken;
+      loading = false;
+    });
+  }
+
+  handleLoadMore() async {
+    if (nextPageToken != '') {
+      ListResultVideo videoRes = await APIService.instance.getRelatedVideos(
+          videoId: widget.video.id, max: 8, nextPageToken: nextPageToken);
+      List<Video> newList = videosRelated.list;
+      if (videoRes.nextPageToken != nextPageToken) {
+        videoRes.list.forEach((video) {
+          newList.add(video);
+        });
+        setState(() {
+          nextPageToken = videoRes.nextPageToken;
+          videosRelated.list = newList;
+          loading = false;
+        });
+      }
+    }
+  }
+
+  void onScroll() {
+    if (!scrollController.hasClients) return;
+
+    final thresholdReached =
+        scrollController.position.extentAfter < endReachedThreshold;
+    if (thresholdReached) {
+      setState(() {
+        loading = true;
+      });
+      handleLoadMore();
+    }
   }
 
   @override
   void dispose() {
-    _scrollController?.dispose();
+    scrollController.dispose();
     super.dispose();
   }
 
@@ -39,7 +86,7 @@ class _VideoScreenState extends State<VideoScreen> {
         body: Container(
           color: Theme.of(context).scaffoldBackgroundColor,
           child: CustomScrollView(
-            controller: _scrollController,
+            controller: scrollController,
             shrinkWrap: true,
             slivers: [
               SliverToBoxAdapter(
@@ -52,7 +99,7 @@ class _VideoScreenState extends State<VideoScreen> {
                           Stack(
                             children: [
                               Image.network(
-                                selectedVideo!.thumbnailUrl,
+                                selectedVideo!.mediumThumbnail,
                                 height: 220.0,
                                 width: double.infinity,
                                 fit: BoxFit.cover,
@@ -79,22 +126,36 @@ class _VideoScreenState extends State<VideoScreen> {
                   },
                 ),
               ),
+              // SliverList(
+              //   delegate: SliverChildBuilderDelegate(
+              //     (context, index) {
+              //       final video = videosRelated.list[index];
+              //       return VideoCard(
+              //         video: video,
+              //         hasPadding: true,
+              //         onTap: () => scrollController.animateTo(
+              //           0,
+              //           duration: const Duration(milliseconds: 200),
+              //           curve: Curves.easeIn,
+              //         ),
+              //       );
+              //     },
+              //     childCount: videosRelated.list.length,
+              //   ),
+              // )
               SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (context, index) {
-                    final video = suggestedVideos[index];
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  if (loading == false) {
                     return VideoCard(
-                      video: video,
+                      video: videosRelated.list[index],
                       hasPadding: true,
-                      onTap: () => _scrollController!.animateTo(
-                        0,
-                        duration: const Duration(milliseconds: 200),
-                        curve: Curves.easeIn,
-                      ),
                     );
-                  },
-                  childCount: suggestedVideos.length,
-                ),
+                  } else {
+                    return Text('No video related');
+                  }
+                },
+                    childCount:
+                        (loading == false) ? videosRelated.list.length : 1),
               )
             ],
           ),

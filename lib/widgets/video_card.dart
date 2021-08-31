@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:miniplayer/miniplayer.dart';
-import 'package:youtube_app/screens/data.dart';
 import 'package:timeago/timeago.dart' as timeago;
+import 'package:youtube_app/models/Model.dart';
 import 'package:youtube_app/screens/nav_screen.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -37,7 +37,7 @@ class VideoCard extends StatelessWidget {
                   horizontal: hasPadding ? 12.0 : 0,
                 ),
                 child: Image.network(
-                  video.thumbnailUrl,
+                  video.mediumThumbnail,
                   height: 220.0,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -46,7 +46,7 @@ class VideoCard extends StatelessWidget {
               Positioned(
                 bottom: 8.0,
                 right: hasPadding ? 20.0 : 8.0,
-                child: Text(video.duration,
+                child: Text(video.duration.toString(),
                     style: Theme.of(context)
                         .textTheme
                         .caption!
@@ -60,12 +60,12 @@ class VideoCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GestureDetector(
-                  onTap: () => print('Navigate profive'),
-                  child: CircleAvatar(
-                    foregroundImage: NetworkImage(video.author.profileImageUrl),
-                  ),
-                ),
+                // GestureDetector(
+                //   onTap: () => print('Navigate profive'),
+                //   child: CircleAvatar(
+                //     foregroundImage: NetworkImage(video.mediumThumbnail),
+                //   ),
+                // ),
                 const SizedBox(
                   width: 8.0,
                 ),
@@ -87,7 +87,7 @@ class VideoCard extends StatelessWidget {
                       ),
                       Flexible(
                         child: Text(
-                          '${video.author.username} + ${video.viewCount} views + ${timeago.format(video.timestamp)}',
+                          '${video.channelTitle}',
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context)
