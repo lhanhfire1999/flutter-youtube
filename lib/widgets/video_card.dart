@@ -18,7 +18,6 @@ class VideoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final deviceOrientation = MediaQuery.of(context).orientation;
     return GestureDetector(
         onTap: () {
           context.read(selectedVideoProvider).state = video;

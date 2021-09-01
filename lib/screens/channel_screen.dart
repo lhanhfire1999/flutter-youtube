@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:youtube_app/models/Model.dart';
+import 'package:youtube_app/screens/channels/video_channel_screen.dart';
 
 class ChannelScreen extends StatefulWidget {
   const ChannelScreen({Key? key, required this.channel}) : super(key: key);
@@ -17,10 +19,18 @@ class _ChannelScreenState extends State<ChannelScreen>
     Tab(child: Text('Playlist')),
     Tab(child: Text('Subcription')),
   ];
+
+  late List _screen = [];
+
   @override
   void initState() {
-    super.initState();
     tabController = TabController(length: tabs.length, vsync: this);
+    _screen = [
+      VideoChannelScreen(channelId: widget.channel.id),
+      const Scaffold(body: Center(child: Text('Playlist'))),
+      const Scaffold(body: Center(child: Text('Subcription'))),
+    ];
+    super.initState();
   }
 
   @override
@@ -60,7 +70,25 @@ class _ChannelScreenState extends State<ChannelScreen>
                 ),
               ],
             ),
-          )
+          ),
+          Consumer(
+            builder: (context, watch, _) {
+              return Stack(
+                  children: _screen
+                      .asMap()
+                      .map(
+                        (i, screen) => MapEntry(
+                          i,
+                          Offstage(
+                            offstage: selectedIndex != i,
+                            child: screen,
+                          ),
+                        ),
+                      )
+                      .values
+                      .toList());
+            },
+          ),
         ],
       ),
     );
