@@ -2,13 +2,15 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:youtube_app/models/Model.dart';
 import 'package:http/http.dart' as http;
+import 'dart:io' show Platform;
 
 class APIService {
   APIService._instantiate();
 
   static final APIService instance = APIService._instantiate();
 
-  final String baseUrl = '10.0.2.2:7070';
+  final String baseUrlIOS = 'localhost:7070';
+  final String baseUrlAndroid = '10.0.2.2:7070';
   Future<ListResultVideo> getPopularVideoByRegion(
       {required String regionCode,
       required int max,
@@ -23,6 +25,12 @@ class APIService {
       'fields':
           'id,title,mediumThumbnail,duration,categoryId,channelTitle,channelId'
     };
+    late String baseUrl = '';
+    if (Platform.isAndroid) {
+      baseUrl = baseUrlAndroid;
+    } else if (Platform.isIOS) {
+      baseUrl = baseUrlIOS;
+    }
     Uri uri = Uri.http(baseUrl, '/tube/videos/popular', parameters);
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
@@ -42,6 +50,12 @@ class APIService {
       'id': channelId,
       'fields': 'id,title,mediumThumbnail'
     };
+    late String baseUrl = '';
+    if (Platform.isAndroid) {
+      baseUrl = baseUrlAndroid;
+    } else if (Platform.isIOS) {
+      baseUrl = baseUrlIOS;
+    }
     Uri uri = Uri.http(baseUrl, '/tube/channels/list', parameters);
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
@@ -60,6 +74,12 @@ class APIService {
     Map<String, String> parameters = {
       'regionCode': regionCode,
     };
+    late String baseUrl = '';
+    if (Platform.isAndroid) {
+      baseUrl = baseUrlAndroid;
+    } else if (Platform.isIOS) {
+      baseUrl = baseUrlIOS;
+    }
     Uri uri = Uri.http(baseUrl, '/tube/category', parameters);
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
@@ -88,6 +108,12 @@ class APIService {
       'fields':
           'id,title,mediumThumbnail,duration,categoryId,channelTitle,channelId'
     };
+    late String baseUrl = '';
+    if (Platform.isAndroid) {
+      baseUrl = baseUrlAndroid;
+    } else if (Platform.isIOS) {
+      baseUrl = baseUrlIOS;
+    }
     Uri uri = Uri.http(baseUrl, '/tube/videos/$videoId/related', parameters);
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',

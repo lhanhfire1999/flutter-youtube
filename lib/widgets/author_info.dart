@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_app/models/Model.dart';
+import 'package:youtube_app/screens/channel_screen.dart';
 import 'package:youtube_app/services/youtube_service.dart';
 
 class AuthorInfor extends StatefulWidget {
@@ -35,12 +36,23 @@ class _AuthorInfor extends State<AuthorInfor> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => print('Nevigate to profile'),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => ChannelScreen(
+                    channel: this.channel,
+                  )),
+        );
+      },
       child: Row(
         children: [
-          // CircleAvatar(
-          //   foregroundImage: NetworkImage(channel.mediumThumbnail),
-          // ),
+          CircleAvatar(
+            foregroundImage: (loading == false)
+                ? NetworkImage(channel.mediumThumbnail)
+                : NetworkImage(
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/YouTube_social_white_square_%282017%29.svg/1200px-YouTube_social_white_square_%282017%29.svg.png'),
+          ),
           const SizedBox(width: 8.0),
           Expanded(
             child: Column(
