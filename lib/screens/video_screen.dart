@@ -126,29 +126,17 @@ class _VideoScreenState extends State<VideoScreen> {
                   },
                 ),
               ),
-              // SliverList(
-              //   delegate: SliverChildBuilderDelegate(
-              //     (context, index) {
-              //       final video = videosRelated.list[index];
-              //       return VideoCard(
-              //         video: video,
-              //         hasPadding: true,
-              //         onTap: () => scrollController.animateTo(
-              //           0,
-              //           duration: const Duration(milliseconds: 200),
-              //           curve: Curves.easeIn,
-              //         ),
-              //       );
-              //     },
-              //     childCount: videosRelated.list.length,
-              //   ),
-              // )
               SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
                   if (loading == false) {
                     return VideoCard(
                       video: videosRelated.list[index],
                       hasPadding: true,
+                      onTap: () => scrollController.animateTo(
+                        0,
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeIn,
+                      ),
                     );
                   } else {
                     return Text('No video related');

@@ -39,10 +39,12 @@ class _ChannelScreenState extends State<ChannelScreen>
             child: CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  leadingWidth: 100.0,
-                  leading: Padding(
-                    padding: const EdgeInsets.only(left: 12.0),
-                    child: Text(widget.channel.title),
+                  leadingWidth: 30.0,
+                  title: Container(
+                    child: Text(
+                      widget.channel.title,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
                   actions: [
                     IconButton(
