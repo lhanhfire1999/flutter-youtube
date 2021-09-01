@@ -38,6 +38,32 @@ class Video {
       };
 }
 
+class Playlist {
+  Playlist(
+      {required this.id,
+      required this.title,
+      required this.mediumThumbnail,
+      required this.count,
+      required this.channelTitle,
+      required this.channelId});
+  String id;
+  String title;
+  String mediumThumbnail;
+  int count;
+  String channelTitle;
+  String channelId;
+
+  factory Playlist.fromJson(Map<String, dynamic> json) => Playlist(
+      id: json['id'],
+      title: json['title'],
+      mediumThumbnail: json['mediumThumnail'] != null
+          ? json['mediumThumnail']
+          : 'https://i.ytimg.com/vi/' + json['id'] + '/mqdefault.jpg',
+      count: json['count'] != null ? json['count'] : 0,
+      channelTitle: json['channelTitle'],
+      channelId: json['channelId']);
+}
+
 class Channel {
   final String id;
   final String title;
@@ -75,14 +101,19 @@ class ListResultVideo {
         nextPageToken:
             json["nextPageToken"] != null ? json["nextPageToken"] : '',
       );
+}
 
-  mapList(List<dynamic> list) {
-    List<Video> videos = [];
-    list.forEach((item) {
-      videos.add(Video.fromJson(item));
-    });
-    return videos;
-  }
+class ListResultPlaylist {
+  ListResultPlaylist({required this.list, required this.nextPageToken});
+  List<Playlist> list;
+  String nextPageToken;
+  factory ListResultPlaylist.fromJson(Map<String, dynamic> json) =>
+      ListResultPlaylist(
+        list:
+            List<Playlist>.from(json["list"].map((x) => Playlist.fromJson(x))),
+        nextPageToken:
+            json["nextPageToken"] != null ? json["nextPageToken"] : '',
+      );
 }
 
 abstract class Title {
