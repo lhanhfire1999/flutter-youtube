@@ -20,7 +20,7 @@ class _ChannelScreenState extends State<ChannelScreen>
     Tab(child: Text('Subcription')),
   ];
 
-  late List _screen = [];
+  late List<Widget> _screen = [];
 
   @override
   void initState() {
@@ -42,55 +42,75 @@ class _ChannelScreenState extends State<ChannelScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Expanded(
-            child: CustomScrollView(
-              slivers: [
-                SliverAppBar(
-                  leadingWidth: 30.0,
-                  title: Container(
-                    child: Text(
-                      widget.channel.title,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  actions: [
-                    IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.search),
-                    ),
-                  ],
-                  bottom: TabBar(
-                    isScrollable: true,
-                    controller: tabController,
-                    tabs: tabs,
-                  ),
+        body: DefaultTabController(
+      length: tabs.length,
+      child: NestedScrollView(
+        headerSliverBuilder: (context, value) {
+          return [
+            SliverAppBar(
+              leadingWidth: 30.0,
+              title: Container(
+                child: Text(
+                  widget.channel.title,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              actions: [
+                IconButton(
+                  onPressed: () {},
+                  icon: const Icon(Icons.search),
                 ),
               ],
+              bottom: TabBar(
+                isScrollable: true,
+                controller: tabController,
+                tabs: tabs,
+              ),
             ),
-          ),
-          Consumer(
-            builder: (context, watch, _) {
-              return Stack(
-                  children: _screen
-                      .asMap()
-                      .map(
-                        (i, screen) => MapEntry(
-                          i,
-                          Offstage(
-                            offstage: selectedIndex != i,
-                            child: screen,
-                          ),
-                        ),
-                      )
-                      .values
-                      .toList());
-            },
-          ),
-        ],
+          ];
+        },
+        body: TabBarView(
+          children: _screen,
+          controller: tabController,
+        ),
       ),
-    );
+    )
+        //  Column(
+        //   mainAxisSize: MainAxisSize.min,
+        //   children: [
+        //     Expanded(
+        //       child: CustomScrollView(
+        //         slivers: [
+        //           SliverAppBar(
+        //             leadingWidth: 30.0,
+        //             title: Container(
+        //               child: Text(
+        //                 widget.channel.title,
+        //                 overflow: TextOverflow.ellipsis,
+        //               ),
+        //             ),
+        //             actions: [
+        //               IconButton(
+        //                 onPressed: () {},
+        //                 icon: const Icon(Icons.search),
+        //               ),
+        //             ],
+        //             bottom: TabBar(
+        //               isScrollable: true,
+        //               controller: tabController,
+        //               tabs: tabs,
+        //             ),
+        //           ),
+        //         ],
+        //       ),
+        //     ),
+        //     Expanded(
+        //         child: TabBarView(
+        //       children: _screen,
+        //       controller: tabController,
+        //     ))
+        //   ],
+        // ),
+        );
   }
 }
