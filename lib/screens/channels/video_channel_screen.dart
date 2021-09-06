@@ -17,7 +17,7 @@ class VideoChannelScreen extends StatefulWidget {
 
 class _VideoChannelScreenState extends State<VideoChannelScreen> {
   late ListResultVideo videosChannel;
-  static const double endReachedThreshold = 50;
+  static const double endReachedThreshold = 200;
   bool loading = true;
   final ScrollController scrollController = ScrollController();
   String nextPageToken = '';
@@ -25,13 +25,35 @@ class _VideoChannelScreenState extends State<VideoChannelScreen> {
   handleGetVideoFromChannel() async {
     ListResultVideo res = (await APIService.instance.getChannelVideos(
       channelId: widget.channelId,
-      max: 8,
+      max: 5,
       nextPageToken: '',
     ));
     setState(() {
+      nextPageToken = res.nextPageToken;
       videosChannel = res;
       loading = false;
     });
+  }
+
+  handleLoadMore() async {
+    if (nextPageToken != '') {
+      ListResultVideo res = (await APIService.instance.getChannelVideos(
+        channelId: widget.channelId,
+        max: 5,
+        nextPageToken: nextPageToken,
+      ));
+      List<Video> newList = videosChannel.list;
+      if (res.nextPageToken != nextPageToken) {
+        res.list.forEach((video) {
+          newList.add(video);
+        });
+        setState(() {
+          nextPageToken = res.nextPageToken;
+          videosChannel.list = newList;
+          loading = false;
+        });
+      }
+    }
   }
 
   void onScroll() {
@@ -43,6 +65,7 @@ class _VideoChannelScreenState extends State<VideoChannelScreen> {
       setState(() {
         loading = true;
       });
+      handleLoadMore();
     }
   }
 

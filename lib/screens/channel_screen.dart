@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:youtube_app/models/Model.dart';
 import 'package:youtube_app/screens/channels/video_channel_screen.dart';
 
@@ -42,75 +41,39 @@ class _ChannelScreenState extends State<ChannelScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        body: DefaultTabController(
-      length: tabs.length,
-      child: NestedScrollView(
-        headerSliverBuilder: (context, value) {
-          return [
-            SliverAppBar(
-              leadingWidth: 30.0,
-              title: Container(
-                child: Text(
-                  widget.channel.title,
-                  overflow: TextOverflow.ellipsis,
+      body: DefaultTabController(
+        length: tabs.length,
+        child: NestedScrollView(
+          headerSliverBuilder: (context, value) {
+            return [
+              SliverAppBar(
+                leadingWidth: 30.0,
+                title: Container(
+                  child: Text(
+                    widget.channel.title,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                actions: [
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.search),
+                  ),
+                ],
+                bottom: TabBar(
+                  isScrollable: true,
+                  controller: tabController,
+                  tabs: tabs,
                 ),
               ),
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const Icon(Icons.search),
-                ),
-              ],
-              bottom: TabBar(
-                isScrollable: true,
-                controller: tabController,
-                tabs: tabs,
-              ),
-            ),
-          ];
-        },
-        body: TabBarView(
-          children: _screen,
-          controller: tabController,
+            ];
+          },
+          body: TabBarView(
+            children: _screen,
+            controller: tabController,
+          ),
         ),
       ),
-    )
-        //  Column(
-        //   mainAxisSize: MainAxisSize.min,
-        //   children: [
-        //     Expanded(
-        //       child: CustomScrollView(
-        //         slivers: [
-        //           SliverAppBar(
-        //             leadingWidth: 30.0,
-        //             title: Container(
-        //               child: Text(
-        //                 widget.channel.title,
-        //                 overflow: TextOverflow.ellipsis,
-        //               ),
-        //             ),
-        //             actions: [
-        //               IconButton(
-        //                 onPressed: () {},
-        //                 icon: const Icon(Icons.search),
-        //               ),
-        //             ],
-        //             bottom: TabBar(
-        //               isScrollable: true,
-        //               controller: tabController,
-        //               tabs: tabs,
-        //             ),
-        //           ),
-        //         ],
-        //       ),
-        //     ),
-        //     Expanded(
-        //         child: TabBarView(
-        //       children: _screen,
-        //       controller: tabController,
-        //     ))
-        //   ],
-        // ),
-        );
+    );
   }
 }
