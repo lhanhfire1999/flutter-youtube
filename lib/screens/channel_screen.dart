@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_app/models/Model.dart';
+import 'package:youtube_app/screens/channels/subscription_screen.dart';
 import 'package:youtube_app/screens/channels/video_channel_screen.dart';
 
 class ChannelScreen extends StatefulWidget {
@@ -14,9 +15,9 @@ class _ChannelScreenState extends State<ChannelScreen>
   late TabController tabController;
   int selectedIndex = 0;
   static const List<Tab> tabs = <Tab>[
-    Tab(child: Text('Video')),
-    Tab(child: Text('Playlist')),
-    Tab(child: Text('Subcription')),
+    Tab(child: Text('VIDEOS')),
+    Tab(child: Text('PLAYLISTS')),
+    Tab(child: Text('CHANNELS')),
   ];
 
   late List<Widget> _screen = [];
@@ -27,7 +28,8 @@ class _ChannelScreenState extends State<ChannelScreen>
     _screen = [
       VideoChannelScreen(channelId: widget.channel.id),
       const Scaffold(body: Center(child: Text('Playlist'))),
-      const Scaffold(body: Center(child: Text('Subcription'))),
+      // const Scaffold(body: Center(child: Text('Subcription'))),
+      Subscriptions(),
     ];
     super.initState();
   }
