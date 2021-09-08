@@ -28,8 +28,7 @@ class _ChannelScreenState extends State<ChannelScreen>
     _screen = [
       VideoChannelScreen(channelId: widget.channel.id),
       const Scaffold(body: Center(child: Text('Playlist'))),
-      // const Scaffold(body: Center(child: Text('Subcription'))),
-      Subscriptions(),
+      Subscriptions(channelId: widget.channel.id),
     ];
     super.initState();
   }

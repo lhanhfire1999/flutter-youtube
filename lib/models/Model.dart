@@ -10,7 +10,7 @@ class Video {
 
   String id;
   String title;
-  int duration;
+  String duration;
   String mediumThumbnail;
   String categoryId;
   String channelTitle;

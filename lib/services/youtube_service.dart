@@ -191,4 +191,28 @@ class APIService {
       throw json.decode(res.body)['error']['message'];
     }
   }
+
+  Future<List<Channel>> getSubscriptions({required String channelId}) async {
+    late String baseUrl = '';
+    if (Platform.isAndroid) {
+      baseUrl = baseUrlAndroid;
+    } else if (Platform.isIOS) {
+      baseUrl = baseUrlIOS;
+    }
+    Uri uri = Uri.http(baseUrl, '/tube/channels/subscriptions/$channelId');
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+    };
+    final res = await http.get(uri, headers: headers);
+    if (res.statusCode == 200) {
+      List<dynamic> results = json.decode(res.body);
+      List<Channel> subscriptions = [];
+      results.forEach((item) {
+        subscriptions.add(Channel.fromMap(item));
+      });
+      return subscriptions;
+    } else {
+      throw json.decode(res.body)['error']['message'];
+    }
+  }
 }
