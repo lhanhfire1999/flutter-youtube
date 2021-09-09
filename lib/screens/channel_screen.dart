@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_app/models/Model.dart';
+import 'package:youtube_app/screens/channels/playlist_channel_screen.dart';
 import 'package:youtube_app/screens/channels/subscription_screen.dart';
 import 'package:youtube_app/screens/channels/video_channel_screen.dart';
 
@@ -27,7 +28,7 @@ class _ChannelScreenState extends State<ChannelScreen>
     tabController = TabController(length: tabs.length, vsync: this);
     _screen = [
       VideoChannelScreen(channelId: widget.channel.id),
-      const Scaffold(body: Center(child: Text('Playlist'))),
+      PlaylistChannel(),
       Subscriptions(channelId: widget.channel.id),
     ];
     super.initState();
