@@ -26,16 +26,6 @@ class Video {
       categoryId: json['categoryId'],
       channelTitle: json['channelTitle'],
       channelId: json['channelId']);
-
-  Map<String, dynamic> toJson() => {
-        "id": id,
-        "title": title,
-        "duration": duration,
-        "mediumThumnail": mediumThumbnail,
-        "categoryId": categoryId,
-        "channelTitle": channelTitle,
-        "channelId": channelId,
-      };
 }
 
 class Playlist {
@@ -54,14 +44,17 @@ class Playlist {
   String channelId;
 
   factory Playlist.fromJson(Map<String, dynamic> json) => Playlist(
-      id: json['id'],
-      title: json['title'],
-      mediumThumbnail: json['mediumThumnail'] != null
-          ? json['mediumThumnail']
-          : 'https://i.ytimg.com/vi/' + json['id'] + '/mqdefault.jpg',
-      count: json['count'] != null ? json['count'] : 0,
-      channelTitle: json['channelTitle'],
-      channelId: json['channelId']);
+        id: json['id'],
+        title: json['title'],
+        mediumThumbnail: json['mediumThumnail'] != null
+            ? json['mediumThumnail']
+            : 'https://i.ytimg.com/vi/' +
+                json['mediumThumbnail'] +
+                '/mqdefault.jpg',
+        count: json['count'] != null ? json['count'] : 0,
+        channelTitle: json['channelTitle'],
+        channelId: json['channelId'],
+      );
 }
 
 class Channel {

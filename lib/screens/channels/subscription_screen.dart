@@ -15,8 +15,9 @@ class Subscriptions extends StatefulWidget {
 }
 
 class _SubscriptionsState extends State<Subscriptions> {
+  late ScrollController controller;
   late List<Channel> listChannel;
-  bool loading = true;
+  late bool _isLoading;
 
   handleGetSubscriptions() async {
     List<Channel> res = (await APIService.instance.getSubscriptions(
@@ -24,20 +25,21 @@ class _SubscriptionsState extends State<Subscriptions> {
     ));
     setState(() {
       listChannel = res;
-      loading = false;
+      _isLoading = false;
     });
   }
 
   @override
   void initState() {
-    handleGetSubscriptions();
     super.initState();
+    _isLoading = true;
+    handleGetSubscriptions();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (loading) {
-      return _loading();
+    if (_isLoading) {
+      return _loadingWidget();
     } else {
       return Scaffold(
         body: CustomScrollView(
@@ -46,7 +48,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                 delegate: SliverChildListDelegate([
               Container(
                 width: double.infinity,
-                padding: const EdgeInsets.all(10.0),
+                padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
                 child: Text(
                   'Subscriptions',
                   textAlign: TextAlign.left,
@@ -55,6 +57,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                   ),
                 ),
               ),
+              const Divider(),
               ..._generateChildren(listChannel.length),
             ]))
           ],
@@ -63,15 +66,14 @@ class _SubscriptionsState extends State<Subscriptions> {
     }
   }
 
-  Widget _loading() {
-    return Center(
-        child: Text(
+  Widget _loadingWidget() {
+    return Text(
       "Loading.......",
       style: TextStyle(
         fontWeight: FontWeight.bold,
         fontSize: 16,
       ),
-    ));
+    );
   }
 
   Widget _generateItem(int index) {
@@ -115,7 +117,7 @@ class _SubscriptionsState extends State<Subscriptions> {
   List<Widget> _generateChildren(int count) {
     List<Widget> items = [];
     if (count == 0) {
-      items.add(Center(child: Text("Channel not exist subscription")));
+      items.add(Text("This channel doesn't feature any other channels."));
       return items;
     } else {
       for (int i = 0; i < count; i++) {

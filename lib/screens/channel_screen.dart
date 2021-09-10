@@ -28,7 +28,7 @@ class _ChannelScreenState extends State<ChannelScreen>
     tabController = TabController(length: tabs.length, vsync: this);
     _screen = [
       VideoChannelScreen(channelId: widget.channel.id),
-      PlaylistChannel(),
+      PlaylistChannel(channelId: widget.channel.id),
       Subscriptions(channelId: widget.channel.id),
     ];
     super.initState();

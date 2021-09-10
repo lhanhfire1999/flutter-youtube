@@ -169,7 +169,7 @@ class APIService {
       'nextPageToken': (nextPageToken.length > 0) ? nextPageToken : '',
       'limit': max.toString(),
       'fields':
-          'id,title,mediumThumbnail,duration,categoryId,channelTitle,channelId',
+          'id,title,mediumThumbnail,duration,categoryId,channelTitle,channelId,count',
       'channelId': channelId
     };
     late String baseUrl = '';
