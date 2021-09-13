@@ -31,6 +31,19 @@ class VideoCard extends StatelessWidget {
   }
 
   Widget builtPortraitList(BuildContext context) {
+    String getTimeString(int value) {
+      if (value < 3600) {
+        int minutes = value ~/ 60;
+        int seconds = value % 60;
+        return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      } else {
+        int hours = value ~/ 3600;
+        int minutes = (value - (hours * 3600)) ~/ 60;
+        int seconds = value - (hours * 3600) - (minutes * 60);
+        return '${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
+      }
+    }
+
     return Column(
       children: [
         Stack(
@@ -49,7 +62,7 @@ class VideoCard extends StatelessWidget {
             Positioned(
               bottom: 8.0,
               right: hasPadding ? 20.0 : 8.0,
-              child: Text(video.duration.toString(),
+              child: Text(getTimeString(int.parse(video.duration)),
                   style: Theme.of(context)
                       .textTheme
                       .caption!
