@@ -192,6 +192,38 @@ class APIService {
     }
   }
 
+  Future<ListResultVideo> getVideoList(
+      {required String playlistId,
+      required int max,
+      required String nextPageToken,
+      List<String>? fields}) async {
+    Map<String, String> parameters = {
+      'nextPageToken': (nextPageToken.length > 0) ? nextPageToken : '',
+      'limit': max.toString(),
+      'fields':
+          'id,title,mediumThumbnail,duration,categoryId,channelTitle,channelId',
+      'playlistId': playlistId
+    };
+    late String baseUrl = '';
+    if (Platform.isAndroid) {
+      baseUrl = baseUrlAndroid;
+    } else if (Platform.isIOS) {
+      baseUrl = baseUrlIOS;
+    }
+    Uri uri = Uri.http(baseUrl, '/tube/videos', parameters);
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+    };
+    var res = await http.get(uri, headers: headers);
+    if (res.statusCode == 200) {
+      dynamic result = json.decode(res.body);
+      ListResultVideo listVideo = ListResultVideo.fromJson(result);
+      return listVideo;
+    } else {
+      throw json.decode(res.body)['error']['message'];
+    }
+  }
+
   Future<List<Channel>> getSubscriptions({required String channelId}) async {
     late String baseUrl = '';
     if (Platform.isAndroid) {

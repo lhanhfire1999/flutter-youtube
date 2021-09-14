@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_app/models/Model.dart';
 import 'package:youtube_app/services/youtube_service.dart';
+import 'package:youtube_app/widgets/loading.dart';
 
 class Subscriptions extends StatefulWidget {
   const Subscriptions({
@@ -39,7 +40,7 @@ class _SubscriptionsState extends State<Subscriptions> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return _loadingWidget();
+      return Loading();
     } else {
       return Scaffold(
         body: CustomScrollView(
@@ -64,16 +65,6 @@ class _SubscriptionsState extends State<Subscriptions> {
         ),
       );
     }
-  }
-
-  Widget _loadingWidget() {
-    return Text(
-      "Loading.......",
-      style: TextStyle(
-        fontWeight: FontWeight.bold,
-        fontSize: 16,
-      ),
-    );
   }
 
   Widget _generateItem(int index) {
