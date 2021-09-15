@@ -22,7 +22,7 @@ class _VideoPlaylistChannelState extends State<VideoPlaylistChannel> {
   late List<Video> videoList;
   String nextPageToken = '';
   bool loadingFirst = true;
-  bool isLoading = true;
+  bool isLoading = false;
 
   handleGetVideoListFormChannel() async {
     ListResultVideo res = await APIService.instance.getVideoList(
@@ -43,7 +43,7 @@ class _VideoPlaylistChannelState extends State<VideoPlaylistChannel> {
     });
     ListResultVideo res = await APIService.instance.getVideoList(
       playlistId: widget.playlist.id,
-      max: 1,
+      max: 5,
       nextPageToken: nextPageToken,
     );
     if (res.nextPageToken != nextPageToken && nextPageToken != '') {
@@ -224,7 +224,6 @@ class _VideoPlaylistChannelState extends State<VideoPlaylistChannel> {
               child: Stack(
                 children: [
                   Image.network(
-                    // 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/YouTube_social_white_square_%282017%29.svg/1200px-YouTube_social_white_square_%282017%29.svg.png',
                     videoList[index].mediumThumbnail,
                     fit: BoxFit.fill,
                     width: double.infinity,
@@ -260,7 +259,6 @@ class _VideoPlaylistChannelState extends State<VideoPlaylistChannel> {
                       child: Padding(
                         padding: const EdgeInsets.only(bottom: 10.0),
                         child: Text(
-                          // 'the chainsmorker',
                           videoList[index].title,
                           maxLines: 3,
                           overflow: TextOverflow.ellipsis,
@@ -271,7 +269,6 @@ class _VideoPlaylistChannelState extends State<VideoPlaylistChannel> {
                         ),
                       ),
                     ),
-                    // Text('the chainsmorker'),
                     Text(videoList[index].channelTitle),
                   ],
                 ),

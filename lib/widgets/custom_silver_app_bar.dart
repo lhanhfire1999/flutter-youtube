@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:youtube_app/screens/search_screen.dart';
 
 class CustomSliverAppBar extends StatelessWidget {
   const CustomSliverAppBar({Key? key}) : super(key: key);
@@ -21,7 +22,12 @@ class CustomSliverAppBar extends StatelessWidget {
           icon: const Icon(Icons.notifications_outlined),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => SearchScreen()),
+            );
+          },
           icon: const Icon(Icons.search),
         ),
       ],

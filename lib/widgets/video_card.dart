@@ -113,7 +113,13 @@ class VideoCard extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
+        // (isLoading == null || isLoading == true)
+        //     ? Loading()
+        //     : SizedBox(
+        //         width: 0,
+        //         height: 0,
+        //       ),
       ],
     );
   }

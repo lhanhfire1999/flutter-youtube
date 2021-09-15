@@ -16,22 +16,22 @@ class VideoChannelScreen extends StatefulWidget {
 }
 
 class _VideoChannelScreenState extends State<VideoChannelScreen> {
-  late ListResultVideo videosChannel;
-  static const double endReachedThreshold = 200;
-  bool loading = true;
   final ScrollController scrollController = ScrollController();
+  static const double endReachedThreshold = 200;
+  late ListResultVideo videosChannel;
   String nextPageToken = '';
+  bool loadingFirst = true;
 
   handleGetVideoFromChannel() async {
     ListResultVideo res = (await APIService.instance.getChannelVideos(
       channelId: widget.channelId,
-      max: 5,
+      max: 4,
       nextPageToken: '',
     ));
     setState(() {
       nextPageToken = res.nextPageToken;
       videosChannel = res;
-      loading = false;
+      loadingFirst = false;
     });
   }
 
@@ -39,7 +39,7 @@ class _VideoChannelScreenState extends State<VideoChannelScreen> {
     if (nextPageToken != '') {
       ListResultVideo res = (await APIService.instance.getChannelVideos(
         channelId: widget.channelId,
-        max: 5,
+        max: 1,
         nextPageToken: nextPageToken,
       ));
       List<Video> newList = videosChannel.list;
@@ -50,7 +50,6 @@ class _VideoChannelScreenState extends State<VideoChannelScreen> {
         setState(() {
           nextPageToken = res.nextPageToken;
           videosChannel.list = newList;
-          loading = false;
         });
       }
     }
@@ -62,11 +61,14 @@ class _VideoChannelScreenState extends State<VideoChannelScreen> {
     final thresholdReached =
         scrollController.position.extentAfter < endReachedThreshold;
     if (thresholdReached) {
-      setState(() {
-        loading = true;
-      });
       handleLoadMore();
     }
+  }
+
+  @override
+  void dispose() {
+    scrollController.removeListener(onScroll);
+    super.dispose();
   }
 
   @override
@@ -89,12 +91,14 @@ class _VideoChannelScreenState extends State<VideoChannelScreen> {
                 SliverList(
                   delegate: SliverChildBuilderDelegate(
                     (context, index) {
-                      if (loading == false) {
-                        return VideoCard(video: videosChannel.list[index]);
+                      if (loadingFirst == false) {
+                        return VideoCard(
+                          video: videosChannel.list[index],
+                        );
                       }
                     },
                     childCount:
-                        (loading == false) ? videosChannel.list.length : 0,
+                        (loadingFirst == false) ? videosChannel.list.length : 0,
                   ),
                 ),
               ],
