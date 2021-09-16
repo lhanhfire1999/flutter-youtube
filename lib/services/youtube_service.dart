@@ -247,4 +247,37 @@ class APIService {
       throw json.decode(res.body)['error']['message'];
     }
   }
+
+  Future<ListResultVideo> getSearchVideos({
+    required String q,
+    required int max,
+    required String nextPageToken,
+    List<String>? fields,
+  }) async {
+    Map<String, String> parameters = {
+      'nextPageToken': (nextPageToken.length > 0) ? nextPageToken : '',
+      'limit': max.toString(),
+      'fields':
+          'id,title,mediumThumbnail,duration,categoryId,channelTitle,channelId',
+      'q': q,
+    };
+    late String baseUrl = '';
+    if (Platform.isAndroid) {
+      baseUrl = baseUrlAndroid;
+    } else if (Platform.isIOS) {
+      baseUrl = baseUrlIOS;
+    }
+    Uri uri = Uri.http(baseUrl, '/tube/videos/search', parameters);
+    Map<String, String> headers = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+    };
+    final res = await http.get(uri, headers: headers);
+    if (res.statusCode == 200) {
+      dynamic result = json.decode(res.body);
+      ListResultVideo listRes = ListResultVideo.fromJson(result);
+      return listRes;
+    } else {
+      throw json.decode(res.body)['error']['message'];
+    }
+  }
 }
