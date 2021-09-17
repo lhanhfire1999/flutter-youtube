@@ -18,7 +18,7 @@ class Subscriptions extends StatefulWidget {
 class _SubscriptionsState extends State<Subscriptions> {
   late ScrollController controller;
   late List<Channel> listChannel;
-  late bool _isLoading;
+  bool _isLoading = true;
 
   handleGetSubscriptions() async {
     List<Channel> res = (await APIService.instance.getSubscriptions(
@@ -33,7 +33,6 @@ class _SubscriptionsState extends State<Subscriptions> {
   @override
   void initState() {
     super.initState();
-    _isLoading = true;
     handleGetSubscriptions();
   }
 
@@ -78,8 +77,9 @@ class _SubscriptionsState extends State<Subscriptions> {
               height: 100.0,
               margin: const EdgeInsets.symmetric(horizontal: 50.0),
               child: CircleAvatar(
-                backgroundImage:
-                    NetworkImage(listChannel[index].mediumThumbnail),
+                backgroundImage: NetworkImage((!_isLoading)
+                    ? listChannel[index].mediumThumbnail
+                    : 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/YouTube_social_white_square_%282017%29.svg/1200px-YouTube_social_white_square_%282017%29.svg.png'),
                 radius: 50.0,
               ),
             ),

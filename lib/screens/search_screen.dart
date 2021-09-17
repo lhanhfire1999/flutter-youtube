@@ -117,7 +117,7 @@ class _SearchScreenState extends State<SearchScreen> {
           children: [
             Expanded(
               child: CustomScrollView(
-                // controller: scrollController,
+                controller: scrollController,
                 slivers: [
                   SliverList(
                     delegate: SliverChildBuilderDelegate(
