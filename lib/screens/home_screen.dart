@@ -11,7 +11,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   static const double endReachedThreshold = 200;
-  bool loading = true;
+  bool loadingFirst = true;
   final ScrollController scrollController = ScrollController();
   String categorySelected = '';
   String nextPageToken = '';
@@ -34,25 +34,25 @@ class _HomeScreenState extends State<HomeScreen> {
       videos = videosRes;
       categories = categoriesRes;
       nextPageToken = videosRes.nextPageToken;
-      loading = false;
+      loadingFirst = false;
     });
   }
 
   handleGetVideoFromCategory(String categoryId) async {
     setState(() {
-      loading = true;
+      loadingFirst = true;
     });
     ListResultVideo videosRes = (await APIService.instance
         .getPopularVideoByRegion(
             regionCode: 'US',
             categoryId: categoryId,
-            max: 10,
+            max: 5,
             nextPageToken: ''));
     setState(() {
       categorySelected = categoryId;
       videos = videosRes;
       nextPageToken = videosRes.nextPageToken;
-      loading = false;
+      loadingFirst = false;
     });
   }
 
@@ -62,7 +62,7 @@ class _HomeScreenState extends State<HomeScreen> {
           .getPopularVideoByRegion(
               regionCode: 'US',
               categoryId: categorySelected,
-              max: 10,
+              max: 5,
               nextPageToken: nextPageToken));
       List<Video> newList = videos.list;
       if (videosRes.nextPageToken != nextPageToken) {
@@ -72,7 +72,7 @@ class _HomeScreenState extends State<HomeScreen> {
         setState(() {
           nextPageToken = videosRes.nextPageToken;
           videos.list = newList;
-          loading = false;
+          // loadingFirst = false;
         });
       }
     }
@@ -84,9 +84,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final thresholdReached =
         scrollController.position.extentAfter < endReachedThreshold;
     if (thresholdReached) {
-      setState(() {
-        loading = true;
-      });
       handleLoadMore();
     }
   }
@@ -119,10 +116,12 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               SliverList(
                 delegate: SliverChildBuilderDelegate((context, index) {
-                  if (loading == false) {
+                  if (loadingFirst == false) {
                     return VideoCard(video: videos.list[index]);
                   }
-                }, childCount: (loading == false) ? videos.list.length : 0),
+                },
+                    childCount:
+                        (loadingFirst == false) ? videos.list.length : 0),
               ),
             ],
           ),

@@ -20,9 +20,22 @@ class _PlaylistChannelState extends State<PlaylistChannel> {
   final ScrollController scrollController = ScrollController();
   static const double endReachedThreshold = 50;
   late List<Playlist> playlistsChannel;
-  late bool loadingFirst = true;
+  bool _loadingFirst = true;
   bool isLoading = true;
   String nextPageToken = '';
+
+  @override
+  void initState() {
+    scrollController.addListener(onScroll);
+    handleGetPlaylistFromChannel();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    scrollController.removeListener(onScroll);
+    super.dispose();
+  }
 
   handleGetPlaylistFromChannel() async {
     ListResultPlaylist res = await APIService.instance.getChannelPlaylists(
@@ -34,8 +47,12 @@ class _PlaylistChannelState extends State<PlaylistChannel> {
     setState(() {
       playlistsChannel = res.list;
       nextPageToken = res.nextPageToken;
-      loadingFirst = false;
+      _loadingFirst = false;
     });
+    if (res.list.length < 1) {
+      _loadingFirst = false;
+      isLoading = false;
+    }
   }
 
   _handleLoadMore() async {
@@ -69,21 +86,8 @@ class _PlaylistChannelState extends State<PlaylistChannel> {
   }
 
   @override
-  void initState() {
-    scrollController.addListener(onScroll);
-    handleGetPlaylistFromChannel();
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    scrollController.removeListener(onScroll);
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    if (loadingFirst) {
+    if (_loadingFirst) {
       return Loading();
     } else {
       return Scaffold(

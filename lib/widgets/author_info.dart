@@ -40,9 +40,10 @@ class _AuthorInfor extends State<AuthorInfor> {
         Navigator.push(
           context,
           MaterialPageRoute(
-              builder: (context) => ChannelScreen(
-                    channel: this.channel,
-                  )),
+            builder: (context) => ChannelScreen(
+              channelId: this.channel.id,
+            ),
+          ),
         );
       },
       child: Row(

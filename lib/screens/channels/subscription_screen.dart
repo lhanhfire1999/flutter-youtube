@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_app/models/Model.dart';
+import 'package:youtube_app/screens/channel_screen.dart';
 import 'package:youtube_app/services/youtube_service.dart';
 import 'package:youtube_app/widgets/loading.dart';
 
@@ -17,7 +18,7 @@ class Subscriptions extends StatefulWidget {
 
 class _SubscriptionsState extends State<Subscriptions> {
   late ScrollController controller;
-  late List<Channel> listChannel;
+  late List<Channel> channelList;
   bool _isLoading = true;
 
   handleGetSubscriptions() async {
@@ -25,7 +26,7 @@ class _SubscriptionsState extends State<Subscriptions> {
       channelId: widget.channelId,
     ));
     setState(() {
-      listChannel = res;
+      channelList = res;
       _isLoading = false;
     });
   }
@@ -58,7 +59,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                 ),
               ),
               const Divider(),
-              ..._generateChildren(listChannel.length),
+              ..._generateChildren(channelList.length),
             ]))
           ],
         ),
@@ -67,39 +68,49 @@ class _SubscriptionsState extends State<Subscriptions> {
   }
 
   Widget _generateItem(int index) {
-    return Container(
-      child: Padding(
-        padding: const EdgeInsets.only(bottom: 20.0),
-        child: Row(
-          children: [
-            Container(
-              width: 100.0,
-              height: 100.0,
-              margin: const EdgeInsets.symmetric(horizontal: 50.0),
-              child: CircleAvatar(
-                backgroundImage: NetworkImage((!_isLoading)
-                    ? listChannel[index].mediumThumbnail
-                    : 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/YouTube_social_white_square_%282017%29.svg/1200px-YouTube_social_white_square_%282017%29.svg.png'),
-                radius: 50.0,
-              ),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  constraints: BoxConstraints(maxWidth: 180),
-                  padding: const EdgeInsets.only(bottom: 5.0),
-                  child: Text(
-                    listChannel[index].title,
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                    style:
-                        TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-                  ),
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) =>
+                  ChannelScreen(channelId: channelList[index].id),
+            ));
+      },
+      child: Container(
+        child: Padding(
+          padding: const EdgeInsets.only(bottom: 20.0),
+          child: Row(
+            children: [
+              Container(
+                width: 100.0,
+                height: 100.0,
+                margin: const EdgeInsets.symmetric(horizontal: 50.0),
+                child: CircleAvatar(
+                  backgroundImage: NetworkImage((!_isLoading)
+                      ? channelList[index].mediumThumbnail
+                      : 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/YouTube_social_white_square_%282017%29.svg/1200px-YouTube_social_white_square_%282017%29.svg.png'),
+                  radius: 50.0,
                 ),
-              ],
-            ),
-          ],
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    constraints: BoxConstraints(maxWidth: 180),
+                    padding: const EdgeInsets.only(bottom: 5.0),
+                    child: Text(
+                      channelList[index].title,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
+                      style: TextStyle(
+                          fontSize: 16.0, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

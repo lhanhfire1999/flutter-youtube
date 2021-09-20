@@ -26,6 +26,7 @@ class _VideoPlaylistChannelState extends State<VideoPlaylistChannel> {
 
   handleGetVideoListFormChannel() async {
     ListResultVideo res = await APIService.instance.getVideoList(
+      channelId: '',
       playlistId: widget.playlist.id,
       max: 5,
       nextPageToken: nextPageToken,
@@ -42,6 +43,7 @@ class _VideoPlaylistChannelState extends State<VideoPlaylistChannel> {
       isLoading = true;
     });
     ListResultVideo res = await APIService.instance.getVideoList(
+      channelId: '',
       playlistId: widget.playlist.id,
       max: 5,
       nextPageToken: nextPageToken,
