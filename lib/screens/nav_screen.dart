@@ -155,9 +155,9 @@ class _NavScreenState extends State<NavScreen> {
         unselectedFontSize: 10.0,
         currentIndex: _selectedIndex,
         onTap: (i) => setState(() => _selectedIndex = i),
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
+            icon: IconButton(icon: Icon(Icons.home_outlined), onPressed: () {}),
             activeIcon: Icon(Icons.home),
             label: 'Home',
           ),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_app/models/Model.dart';
+import 'package:youtube_app/screens/search_screen.dart';
 import 'package:youtube_app/services/youtube_service.dart';
 import 'package:youtube_app/utils/format_duration.dart';
 import 'package:youtube_app/widgets/loading.dart';
@@ -105,7 +106,12 @@ class _VideoPlaylistChannelState extends State<VideoPlaylistChannel> {
                   icon: const Icon(Icons.cast_connected),
                 ),
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => SearchScreen()),
+                    );
+                  },
                   icon: const Icon(Icons.search),
                 ),
                 IconButton(

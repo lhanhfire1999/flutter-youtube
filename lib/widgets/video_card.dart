@@ -50,12 +50,18 @@ class VideoCard extends StatelessWidget {
             Positioned(
               bottom: 8.0,
               right: hasPadding ? 20.0 : 8.0,
-              child: Text(
-                  FormatDuration.getTimeString(int.parse(video.duration)),
-                  style: Theme.of(context)
-                      .textTheme
-                      .caption!
-                      .copyWith(color: Colors.white)),
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  color: Colors.black54,
+                ),
+                child: Text(
+                    FormatDuration.getTimeString(int.parse(video.duration)),
+                    style: Theme.of(context)
+                        .textTheme
+                        .caption!
+                        .copyWith(color: Colors.white)),
+              ),
             )
           ],
         ),

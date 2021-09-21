@@ -3,6 +3,7 @@ import 'package:youtube_app/models/Model.dart';
 import 'package:youtube_app/screens/channels/playlist_channel_screen.dart';
 import 'package:youtube_app/screens/channels/subscription_screen.dart';
 import 'package:youtube_app/screens/channels/video_channel_screen.dart';
+import 'package:youtube_app/screens/search_screen.dart';
 import 'package:youtube_app/services/youtube_service.dart';
 import 'package:youtube_app/widgets/loading.dart';
 
@@ -78,7 +79,12 @@ class _ChannelScreenState extends State<ChannelScreen>
                 ),
                 actions: [
                   IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => SearchScreen()),
+                      );
+                    },
                     icon: const Icon(Icons.search),
                   ),
                 ],
