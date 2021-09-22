@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:youtube_app/screens/nav_screen.dart';
+import 'package:youtube_app/route.dart';
 
 void main() {
   runApp(ProviderScope(child: MyApp()));
@@ -19,7 +19,8 @@ class MyApp extends StatelessWidget {
         bottomNavigationBarTheme:
             const BottomNavigationBarThemeData(selectedItemColor: Colors.white),
       ),
-      home: NavScreen(),
+      onGenerateRoute: Routers.generateRoute,
+      initialRoute: '/',
     );
   }
 }

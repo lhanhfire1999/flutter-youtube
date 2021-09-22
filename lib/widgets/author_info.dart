@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_app/models/Model.dart';
-import 'package:youtube_app/screens/channel_screen.dart';
 import 'package:youtube_app/services/youtube_service.dart';
 
 class AuthorInfor extends StatefulWidget {
@@ -37,14 +36,7 @@ class _AuthorInfor extends State<AuthorInfor> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ChannelScreen(
-              channelId: this.channel.id,
-            ),
-          ),
-        );
+        Navigator.pushNamed(context, '/channel', arguments: channel.id);
       },
       child: Row(
         children: [

@@ -47,8 +47,7 @@ class APIService {
 
   Future<Channel> getChannel({required String channelId}) async {
     Map<String, String> parameters = {
-      'id': channelId,
-      'fields': 'id,title,mediumThumbnail'
+      'fields': 'id,title,mediumThumbnail,channels'
     };
     late String baseUrl = '';
     if (Platform.isAndroid) {
@@ -56,19 +55,15 @@ class APIService {
     } else if (Platform.isIOS) {
       baseUrl = baseUrlIOS;
     }
-    Uri uri = Uri.http(baseUrl, '/tube/channels/list', parameters);
+    Uri uri = Uri.http(baseUrl, '/tube/channels/$channelId', parameters);
     Map<String, String> headers = {
       HttpHeaders.contentTypeHeader: 'application/json',
     };
     var res = await http.get(uri, headers: headers);
     if (res.statusCode == 200) {
-      List<dynamic> channelRes = json.decode(res.body);
-      if (channelRes.length != 0) {
-        Channel channel = Channel.fromMap(channelRes[0]);
-        return channel;
-      }
-      Channel test = new Channel('', 'Channel Not Exist', '');
-      return test;
+      dynamic channelRes = json.decode(res.body);
+      Channel channel = Channel.fromMap(channelRes);
+      return channel;
     } else {
       throw json.decode(res.body)['error']['message'];
     }
@@ -131,38 +126,6 @@ class APIService {
       throw json.decode(res.body)['error']['message'];
     }
   }
-
-  // Future<ListResultVideo> getChannelVideos(
-  //     {required String channelId,
-  //     required int max,
-  //     required String nextPageToken,
-  //     List<String>? fields}) async {
-  //   Map<String, String> parameters = {
-  //     'nextPageToken': (nextPageToken.length > 0) ? nextPageToken : '',
-  //     'limit': max.toString(),
-  //     'fields':
-  //         'id,title,mediumThumbnail,duration,categoryId,channelTitle,channelId',
-  //     'channelId': channelId
-  //   };
-  //   late String baseUrl = '';
-  //   if (Platform.isAndroid) {
-  //     baseUrl = baseUrlAndroid;
-  //   } else if (Platform.isIOS) {
-  //     baseUrl = baseUrlIOS;
-  //   }
-  //   Uri uri = Uri.http(baseUrl, '/tube/videos/search', parameters);
-  //   Map<String, String> headers = {
-  //     HttpHeaders.contentTypeHeader: 'application/json',
-  //   };
-  //   var res = await http.get(uri, headers: headers);
-  //   if (res.statusCode == 200) {
-  //     dynamic result = json.decode(res.body);
-  //     ListResultVideo listRes = ListResultVideo.fromJson(result);
-  //     return listRes;
-  //   } else {
-  //     throw json.decode(res.body)['error']['message'];
-  //   }
-  // }
 
   Future<ListResultPlaylist> getChannelPlaylists(
       {required String channelId,

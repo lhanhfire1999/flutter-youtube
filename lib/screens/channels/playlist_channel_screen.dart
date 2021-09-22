@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_app/models/Model.dart';
-import 'package:youtube_app/screens/channels/video-playlist-channel.dart';
 import 'package:youtube_app/services/youtube_service.dart';
 import 'package:youtube_app/widgets/loading.dart';
 
@@ -21,7 +20,7 @@ class _PlaylistChannelState extends State<PlaylistChannel> {
   static const double endReachedThreshold = 50;
   late List<Playlist> playlistsChannel;
   bool _loadingFirst = true;
-  bool isLoading = true;
+  bool isLoading = false;
   String nextPageToken = '';
 
   @override
@@ -125,12 +124,8 @@ class _PlaylistChannelState extends State<PlaylistChannel> {
   Widget _generateItem(int index, BuildContext context) {
     return GestureDetector(
       onTap: () => {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => VideoPlaylistChannel(
-                      playlist: playlistsChannel[index],
-                    )))
+        Navigator.pushNamed(context, '/channel/playlists/list',
+            arguments: playlistsChannel[index])
       },
       child: Container(
         margin: const EdgeInsets.fromLTRB(10.0, 10.0, 0, 10.0),

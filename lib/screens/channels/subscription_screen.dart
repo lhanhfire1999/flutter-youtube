@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_app/models/Model.dart';
-import 'package:youtube_app/screens/channel_screen.dart';
 import 'package:youtube_app/services/youtube_service.dart';
 import 'package:youtube_app/widgets/loading.dart';
 
@@ -18,15 +17,19 @@ class Subscriptions extends StatefulWidget {
 
 class _SubscriptionsState extends State<Subscriptions> {
   late ScrollController controller;
-  late List<Channel> channelList;
+  late List<dynamic> channels = [];
   bool _isLoading = true;
 
   handleGetSubscriptions() async {
-    List<Channel> res = (await APIService.instance.getSubscriptions(
+    Channel res = await APIService.instance.getChannel(
       channelId: widget.channelId,
-    ));
+    );
+    if (res.channels.length > 0) {
+      setState(() {
+        channels.addAll(res.channels);
+      });
+    }
     setState(() {
-      channelList = res;
       _isLoading = false;
     });
   }
@@ -59,7 +62,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                 ),
               ),
               const Divider(),
-              ..._generateChildren(channelList.length),
+              ..._generateChildren(channels.length),
             ]))
           ],
         ),
@@ -70,12 +73,8 @@ class _SubscriptionsState extends State<Subscriptions> {
   Widget _generateItem(int index) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  ChannelScreen(channelId: channelList[index].id),
-            ));
+        Navigator.pushReplacementNamed(context, '/channel',
+            arguments: channels[index]['id']);
       },
       child: Container(
         child: Padding(
@@ -87,8 +86,8 @@ class _SubscriptionsState extends State<Subscriptions> {
                 height: 100.0,
                 margin: const EdgeInsets.symmetric(horizontal: 50.0),
                 child: CircleAvatar(
-                  backgroundImage: NetworkImage((!_isLoading)
-                      ? channelList[index].mediumThumbnail
+                  backgroundImage: NetworkImage(!_isLoading
+                      ? channels[index]['mediumThumbnail']
                       : 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/YouTube_social_white_square_%282017%29.svg/1200px-YouTube_social_white_square_%282017%29.svg.png'),
                   radius: 50.0,
                 ),
@@ -100,7 +99,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                     constraints: BoxConstraints(maxWidth: 180),
                     padding: const EdgeInsets.only(bottom: 5.0),
                     child: Text(
-                      channelList[index].title,
+                      channels[index]['title'],
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(

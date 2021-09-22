@@ -61,10 +61,12 @@ class Channel {
   final String id;
   final String title;
   final String mediumThumbnail;
+  List<dynamic> channels;
 
-  Channel(this.id, this.title, this.mediumThumbnail);
+  Channel(this.id, this.title, this.mediumThumbnail, this.channels);
   factory Channel.fromMap(Map<String, dynamic> item) {
-    return Channel(item['id'], item['title'], item['mediumThumbnail']);
+    return Channel(item['id'], item['title'], item['mediumThumbnail'],
+        item['channels'] != null ? item['channels'] : []);
   }
 }
 
