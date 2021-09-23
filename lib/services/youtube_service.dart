@@ -6,17 +6,17 @@ import 'dart:io' show Platform;
 
 class APIService {
   APIService._instantiate();
-
   static final APIService instance = APIService._instantiate();
 
   final String baseUrlIOS = 'localhost:7070';
   final String baseUrlAndroid = '10.0.2.2:7070';
-  Future<ListResultVideo> getPopularVideoByRegion(
-      {required String regionCode,
-      required int max,
-      required String categoryId,
-      required String nextPageToken,
-      List<String>? fields}) async {
+  Future<ListResultVideo> getPopularVideoByRegion({
+    required String regionCode,
+    required int max,
+    required String categoryId,
+    required String nextPageToken,
+    List<String>? fields,
+  }) async {
     Map<String, String> parameters = {
       'regionCode': regionCode,
       'categoryId': (categoryId.length > 0) ? categoryId : '',
@@ -38,7 +38,7 @@ class APIService {
     var res = await http.get(uri, headers: headers);
     if (res.statusCode == 200) {
       dynamic result = json.decode(res.body);
-      ListResultVideo listRes = ListResultVideo.fromJson(result);
+      ListResultVideo listRes = ListResultVideo.fromMap(result);
       return listRes;
     } else {
       throw json.decode(res.body)['error']['message'];
@@ -61,7 +61,7 @@ class APIService {
     };
     var res = await http.get(uri, headers: headers);
     if (res.statusCode == 200) {
-      dynamic channelRes = json.decode(res.body);
+      Map<String, dynamic> channelRes = json.decode(res.body);
       Channel channel = Channel.fromMap(channelRes);
       return channel;
     } else {
@@ -120,7 +120,7 @@ class APIService {
     var res = await http.get(uri, headers: headers);
     if (res.statusCode == 200) {
       dynamic result = json.decode(res.body);
-      ListResultVideo listRes = ListResultVideo.fromJson(result);
+      ListResultVideo listRes = ListResultVideo.fromMap(result);
       return listRes;
     } else {
       throw json.decode(res.body)['error']['message'];
@@ -152,7 +152,7 @@ class APIService {
     var res = await http.get(uri, headers: headers);
     if (res.statusCode == 200) {
       dynamic result = json.decode(res.body);
-      ListResultPlaylist listRes = ListResultPlaylist.fromJson(result);
+      ListResultPlaylist listRes = ListResultPlaylist.fromMap(result);
       return listRes;
     } else {
       throw json.decode(res.body)['error']['message'];
@@ -186,7 +186,7 @@ class APIService {
     var res = await http.get(uri, headers: headers);
     if (res.statusCode == 200) {
       dynamic result = json.decode(res.body);
-      ListResultVideo listVideo = ListResultVideo.fromJson(result);
+      ListResultVideo listVideo = ListResultVideo.fromMap(result);
       return listVideo;
     } else {
       throw json.decode(res.body)['error']['message'];
@@ -243,7 +243,7 @@ class APIService {
     final res = await http.get(uri, headers: headers);
     if (res.statusCode == 200) {
       dynamic result = json.decode(res.body);
-      ListResultVideo listRes = ListResultVideo.fromJson(result);
+      ListResultVideo listRes = ListResultVideo.fromMap(result);
       return listRes;
     } else {
       throw json.decode(res.body)['error']['message'];

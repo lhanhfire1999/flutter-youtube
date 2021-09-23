@@ -17,7 +17,7 @@ class Subscriptions extends StatefulWidget {
 
 class _SubscriptionsState extends State<Subscriptions> {
   late ScrollController controller;
-  late List<dynamic> channels = [];
+  late List<SubChannels> channels = [];
   bool _isLoading = true;
 
   handleGetSubscriptions() async {
@@ -74,7 +74,7 @@ class _SubscriptionsState extends State<Subscriptions> {
     return GestureDetector(
       onTap: () {
         Navigator.pushReplacementNamed(context, '/channel',
-            arguments: channels[index]['id']);
+            arguments: channels[index].id);
       },
       child: Container(
         child: Padding(
@@ -87,7 +87,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                 margin: const EdgeInsets.symmetric(horizontal: 50.0),
                 child: CircleAvatar(
                   backgroundImage: NetworkImage(!_isLoading
-                      ? channels[index]['mediumThumbnail']
+                      ? channels[index].mediumThumbnail
                       : 'https://upload.wikimedia.org/wikipedia/commons/thumb/7/72/YouTube_social_white_square_%282017%29.svg/1200px-YouTube_social_white_square_%282017%29.svg.png'),
                   radius: 50.0,
                 ),
@@ -99,7 +99,7 @@ class _SubscriptionsState extends State<Subscriptions> {
                     constraints: BoxConstraints(maxWidth: 180),
                     padding: const EdgeInsets.only(bottom: 5.0),
                     child: Text(
-                      channels[index]['title'],
+                      channels[index].title,
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(

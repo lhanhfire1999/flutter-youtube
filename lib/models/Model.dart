@@ -1,13 +1,4 @@
 class Video {
-  Video(
-      {required this.id,
-      required this.title,
-      required this.duration,
-      required this.mediumThumbnail,
-      required this.categoryId,
-      required this.channelTitle,
-      required this.channelId});
-
   String id;
   String title;
   String duration;
@@ -16,26 +7,32 @@ class Video {
   String channelTitle;
   String channelId;
 
-  factory Video.fromJson(Map<String, dynamic> json) => Video(
-      id: json['id'],
-      title: json['title'],
-      duration: json['duration'],
-      mediumThumbnail: json['mediumThumnail'] != null
+  Video(
+    this.id,
+    this.title,
+    this.duration,
+    this.mediumThumbnail,
+    this.categoryId,
+    this.channelTitle,
+    this.channelId,
+  );
+
+  factory Video.fromMap(Map<String, dynamic> json) {
+    return Video(
+      json['id'],
+      json['title'],
+      json['duration'],
+      json['mediumThumbnail'] != null
           ? json['mediumThumnail']
           : 'https://i.ytimg.com/vi/' + json['id'] + '/mqdefault.jpg',
-      categoryId: json['categoryId'],
-      channelTitle: json['channelTitle'],
-      channelId: json['channelId']);
+      json['categoryId'],
+      json['channelTitle'],
+      json['channelId'],
+    );
+  }
 }
 
 class Playlist {
-  Playlist(
-      {required this.id,
-      required this.title,
-      required this.mediumThumbnail,
-      required this.count,
-      required this.channelTitle,
-      required this.channelId});
   String id;
   String title;
   String mediumThumbnail;
@@ -43,30 +40,70 @@ class Playlist {
   String channelTitle;
   String channelId;
 
-  factory Playlist.fromJson(Map<String, dynamic> json) => Playlist(
-        id: json['id'],
-        title: json['title'],
-        mediumThumbnail: json['mediumThumnail'] != null
+  Playlist(
+    this.id,
+    this.title,
+    this.mediumThumbnail,
+    this.count,
+    this.channelTitle,
+    this.channelId,
+  );
+
+  factory Playlist.fromMap(Map<String, dynamic> json) => Playlist(
+        json['id'],
+        json['title'],
+        json['meiumThumnail'] != null
             ? json['mediumThumnail']
             : 'https://i.ytimg.com/vi/' +
                 json['mediumThumbnail'] +
                 '/mqdefault.jpg',
-        count: json['count'] != null ? json['count'] : 0,
-        channelTitle: json['channelTitle'],
-        channelId: json['channelId'],
+        json['count'] != null ? json['count'] : 0,
+        json['channelTitle'],
+        json['channelId'],
       );
 }
 
 class Channel {
-  final String id;
-  final String title;
-  final String mediumThumbnail;
-  List<dynamic> channels;
+  String id;
+  String title;
+  String mediumThumbnail;
+  List<SubChannels> channels;
 
-  Channel(this.id, this.title, this.mediumThumbnail, this.channels);
-  factory Channel.fromMap(Map<String, dynamic> item) {
-    return Channel(item['id'], item['title'], item['mediumThumbnail'],
-        item['channels'] != null ? item['channels'] : []);
+  Channel(
+    this.id,
+    this.title,
+    this.mediumThumbnail,
+    this.channels,
+  );
+  factory Channel.fromMap(Map<String, dynamic> json) {
+    return Channel(
+      json['id'],
+      json['title'],
+      json['mediumThumbnail'],
+      json['channels'] != null
+          ? List<SubChannels>.from(
+              json['channels'].map((x) => SubChannels.fromMap(x)))
+          : [],
+    );
+  }
+}
+
+class SubChannels {
+  String id;
+  String title;
+  String mediumThumbnail;
+
+  SubChannels(
+    this.id,
+    this.title,
+    this.mediumThumbnail,
+  );
+  factory SubChannels.fromMap(Map<String, dynamic> item) {
+    return SubChannels(
+      item['id'],
+      item['title'],
+      item['mediumThumbnail'],
+    );
   }
 }
 
@@ -76,36 +113,51 @@ class Category {
   final bool assignable;
   final String channelId;
 
-  Category(this.id, this.title, this.assignable, this.channelId);
+  Category(
+    this.id,
+    this.title,
+    this.assignable,
+    this.channelId,
+  );
 
-  factory Category.fromMap(Map<String, dynamic> item) {
+  factory Category.fromMap(Map<String, dynamic> json) {
     return Category(
-        item['id'], item['title'], item['assignable'], item['channelId']);
+      json['id'],
+      json['title'],
+      json['assignable'],
+      json['channelId'],
+    );
   }
 }
 
 class ListResultVideo {
-  ListResultVideo({required this.list, required this.nextPageToken});
-
   List<Video> list;
   String nextPageToken;
 
-  factory ListResultVideo.fromJson(Map<String, dynamic> json) =>
-      ListResultVideo(
-        list: List<Video>.from(json["list"].map((x) => Video.fromJson(x))),
+  ListResultVideo({
+    required this.list,
+    required this.nextPageToken,
+  });
+
+  factory ListResultVideo.fromMap(Map<String, dynamic> json) => ListResultVideo(
+        list: List<Video>.from(json["list"].map((x) => Video.fromMap(x))),
         nextPageToken:
             json["nextPageToken"] != null ? json["nextPageToken"] : '',
       );
 }
 
 class ListResultPlaylist {
-  ListResultPlaylist({required this.list, required this.nextPageToken});
   List<Playlist> list;
   String nextPageToken;
-  factory ListResultPlaylist.fromJson(Map<String, dynamic> json) =>
+
+  ListResultPlaylist({
+    required this.list,
+    required this.nextPageToken,
+  });
+
+  factory ListResultPlaylist.fromMap(Map<String, dynamic> json) =>
       ListResultPlaylist(
-        list:
-            List<Playlist>.from(json["list"].map((x) => Playlist.fromJson(x))),
+        list: List<Playlist>.from(json["list"].map((x) => Playlist.fromMap(x))),
         nextPageToken:
             json["nextPageToken"] != null ? json["nextPageToken"] : '',
       );
@@ -184,11 +236,12 @@ abstract class YoutubeVideoDetail {
   final RegionRestriction? regionRestriction;
 
   YoutubeVideoDetail(
-      this.duration,
-      this.dimension,
-      this.definition,
-      this.caption,
-      this.licensedContent,
-      this.projection,
-      this.regionRestriction);
+    this.duration,
+    this.dimension,
+    this.definition,
+    this.caption,
+    this.licensedContent,
+    this.projection,
+    this.regionRestriction,
+  );
 }

@@ -16,6 +16,7 @@ class AuthorInfor extends StatefulWidget {
 
 class _AuthorInfor extends State<AuthorInfor> {
   late Channel channel;
+  late bool errors = false;
   bool loading = true;
   void initState() {
     super.initState();
@@ -23,17 +24,26 @@ class _AuthorInfor extends State<AuthorInfor> {
   }
 
   _initVideo() async {
-    Channel channelRes = await APIService.instance.getChannel(
-      channelId: widget.channelId,
-    );
-    setState(() {
-      channel = channelRes;
-      loading = false;
-    });
+    try {
+      Channel channelRes = await APIService.instance.getChannel(
+        channelId: widget.channelId,
+      );
+      setState(() {
+        channel = channelRes;
+        loading = false;
+      });
+    } catch (error) {
+      setState(() {
+        errors = true;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    if (errors) {
+      return Center(child: Text('This Channel has no data in the Database'));
+    }
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, '/channel', arguments: channel.id);
