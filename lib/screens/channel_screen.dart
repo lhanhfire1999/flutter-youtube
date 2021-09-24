@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_app/models/Model.dart';
-import 'package:youtube_app/screens/channels/playlist_channel_screen.dart';
-import 'package:youtube_app/screens/channels/subscription_screen.dart';
-import 'package:youtube_app/screens/channels/video_channel_screen.dart';
+import 'package:youtube_app/screens/channels/playlistsTab/playlist_channel_screen.dart';
+import 'package:youtube_app/screens/channels/channlesTab/subscription_screen.dart';
+import 'package:youtube_app/screens/channels/videosTab/video_channel_screen.dart';
 import 'package:youtube_app/services/youtube_service.dart';
 import 'package:youtube_app/widgets/loading.dart';
 
