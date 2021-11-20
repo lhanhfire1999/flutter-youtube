@@ -26,12 +26,8 @@ class _VideoPlaylistChannelState extends State<VideoPlaylistChannel> {
   bool isLoading = false;
 
   handleGetVideoListFormChannel() async {
-    ListResultVideo res = await APIService.instance.getVideoList(
-      channelId: '',
-      playlistId: widget.playlist.id,
-      max: 5,
-      nextPageToken: nextPageToken,
-    );
+    YoutubeListResult<Video> res = await VideoClient.instance
+        .getVideoList(widget.playlist.id, '', 5, nextPageToken, null);
     setState(() {
       videoList = res.list;
       nextPageToken = res.nextPageToken;
@@ -43,12 +39,8 @@ class _VideoPlaylistChannelState extends State<VideoPlaylistChannel> {
     setState(() {
       isLoading = true;
     });
-    ListResultVideo res = await APIService.instance.getVideoList(
-      channelId: '',
-      playlistId: widget.playlist.id,
-      max: 5,
-      nextPageToken: nextPageToken,
-    );
+    YoutubeListResult<Video> res = await VideoClient.instance
+        .getVideoList(widget.playlist.id, '', 5, nextPageToken, null);
     if (res.nextPageToken != nextPageToken && nextPageToken != '') {
       setState(() {
         videoList.addAll(res.list);

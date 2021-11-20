@@ -17,13 +17,11 @@ class Subscriptions extends StatefulWidget {
 
 class _SubscriptionsState extends State<Subscriptions> {
   late ScrollController controller;
-  late List<SubChannels> channels = [];
+  late List<SubChannel> channels = [];
   bool _isLoading = true;
 
   handleGetSubscriptions() async {
-    Channel res = await APIService.instance.getChannel(
-      channelId: widget.channelId,
-    );
+    Channel res = await VideoClient.instance.getChannel(widget.channelId, null);
     if (res.channels.length > 0) {
       setState(() {
         channels.addAll(res.channels);

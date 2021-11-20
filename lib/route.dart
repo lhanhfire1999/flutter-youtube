@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:youtube_app/models/Model.dart';
 import 'package:youtube_app/screens/channel_screen.dart';
-import 'package:youtube_app/screens/channels/playlistsTab/playlist_channel_screen.dart';
 import 'package:youtube_app/screens/channels/channlesTab/subscription_screen.dart';
-import 'package:youtube_app/screens/channels/videosTab/video_channel_screen.dart';
+import 'package:youtube_app/screens/channels/playlistsTab/playlist_channel_screen.dart';
 import 'package:youtube_app/screens/channels/playlistsTab/videoPlaylist/video_playlist_channel.dart';
+import 'package:youtube_app/screens/channels/videosTab/video_channel_screen.dart';
 import 'package:youtube_app/screens/nav_screen.dart';
 import 'package:youtube_app/screens/search_screen.dart';
 

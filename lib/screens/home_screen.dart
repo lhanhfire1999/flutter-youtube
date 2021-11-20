@@ -15,8 +15,8 @@ class _HomeScreenState extends State<HomeScreen> {
   final ScrollController scrollController = ScrollController();
   String categorySelected = '';
   String nextPageToken = '';
-  List<Category> categories = [];
-  late ListResultVideo videos;
+  List<VideoCategory> categories = [];
+  late YoutubeListResult<Video> videos;
   @override
   void initState() {
     super.initState();
@@ -25,11 +25,10 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   _initVideo() async {
-    ListResultVideo videosRes = (await APIService.instance
-        .getPopularVideoByRegion(
-            regionCode: 'US', categoryId: '', max: 10, nextPageToken: ''));
-    List<Category> categoriesRes =
-        await APIService.instance.getCatagories(regionCode: 'US');
+    YoutubeListResult<Video> videosRes =
+        (await VideoClient.instance.getPopularVideos('US', '', 10, '', null));
+    List<VideoCategory> categoriesRes =
+        await VideoClient.instance.getCatagories('US');
     setState(() {
       videos = videosRes;
       categories = categoriesRes;
@@ -42,12 +41,8 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       loadingFirst = true;
     });
-    ListResultVideo videosRes = (await APIService.instance
-        .getPopularVideoByRegion(
-            regionCode: 'US',
-            categoryId: categoryId,
-            max: 5,
-            nextPageToken: ''));
+    YoutubeListResult<Video> videosRes = (await VideoClient.instance
+        .getPopularVideos('US', categoryId, 5, '', null));
     setState(() {
       categorySelected = categoryId;
       videos = videosRes;
@@ -58,12 +53,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   handleLoadMore() async {
     if (nextPageToken != '') {
-      ListResultVideo videosRes = (await APIService.instance
-          .getPopularVideoByRegion(
-              regionCode: 'US',
-              categoryId: categorySelected,
-              max: 5,
-              nextPageToken: nextPageToken));
+      YoutubeListResult<Video> videosRes = (await VideoClient.instance
+          .getPopularVideos('US', categorySelected, 5, nextPageToken, null));
       List<Video> newList = videos.list;
       if (videosRes.nextPageToken != nextPageToken) {
         videosRes.list.forEach((video) {
